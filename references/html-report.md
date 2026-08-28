@@ -18,7 +18,7 @@ HTML 파일**로도 만들어 `templates/report.html`에 저장한다. 외부 CD
 8. 테크니컬 문제 ↔ AI 답변 연결
 9. 우선 개선 과제
 10. 재측정 방법
-11. 부록: 질문 10개
+11. 부록: 질문 5개
 
 ## 기술 점수 게이지 (SVG, 그대로 쓰고 각도만 계산해서 채운다)
 
@@ -90,8 +90,8 @@ HTML 파일**로도 만들어 `templates/report.html`에 저장한다. 외부 CD
 <body>
 <div class="wrap">
   <h1>{브랜드명} GEO 스냅샷</h1>
-  <div class="sub">측정일자: {날짜} · 질문 10개 · 단일 시점</div>
-  <div class="banner">⚠ 질문 10개, 단일 시점, 반복 측정 없음의 스냅샷입니다. 추세가 아니라 현재 한 장의 사진으로 읽어주세요.</div>
+  <div class="sub">측정일자: {날짜} · 질문 5개 · 단일 시점</div>
+  <div class="banner">⚠ 질문 5개, 단일 시점, 반복 측정 없음의 스냅샷입니다. 추세가 아니라 현재 한 장의 사진으로 읽어주세요.</div>
 
   <div class="card"><h2>사이트 기술 점수</h2>(게이지 삽입)</div>
   <div class="card"><h2>핵심 지표</h2>(표 삽입)</div>
