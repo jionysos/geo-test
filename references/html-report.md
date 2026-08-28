@@ -176,9 +176,12 @@ colgroup(항목 26% · 상태 14% · 근거 나머지)을 그대로 반복해서
 <ul class="formula-list">
   <li>언급률 = 언급된 답변 수 / 전체 질문 수</li>
   <li>추천률 = 추천된 답변 수 / 추천이 성립할 수 있는 질문 수</li>
-  <li>인용률 = 도메인이 출처로 표시된 답변 수 / 출처 URL이 있는 답변 수</li>
 </ul>
 ```
+
+인용률은 넣지 않는다 — `references/scoring.md` 참고("+N" 묶음 맹점 때문에
+계산하지 않기로 함). 경쟁사가 있으면 이 아래에 Mention SoV·Recommendation
+SoV도 같이 보여준다.
 
 `.formula-list`는 아래 전체 골격 CSS에 포함돼 있다(불릿 없이, 작고 흐린
 텍스트로, 줄 사이 여백을 좀 준다).
@@ -190,16 +193,16 @@ O/X는 색으로도 구분한다(`.ox-good`=초록 O, `.ox-bad`=회색 X, 회색
 "실패"가 아니라 "여기선 없었다"는 중립적 사실이라서 빨간색을 안 쓴다):
 
 ```html
-<table><thead><tr><th>ID</th><th>질문</th><th>언급</th><th>추천</th><th>인용</th><th>등장 브랜드</th></tr></thead>
+<table><thead><tr><th>ID</th><th>질문</th><th>언급</th><th>추천</th><th>등장 브랜드</th></tr></thead>
 <tbody>
 <tr>
   <td>Q1</td><td>강아지 종합영양제 선택 기준</td>
-  <td class="ox-bad">X</td><td class="ox-bad">X</td><td class="ox-bad">X</td>
+  <td class="ox-bad">X</td><td class="ox-bad">X</td>
   <td>—</td>
 </tr>
 <tr>
   <td>Q2</td><td>국내 종합영양제 추천</td>
-  <td class="ox-bad">X</td><td class="ox-bad">X</td><td class="ox-bad">X</td>
+  <td class="ox-bad">X</td><td class="ox-bad">X</td>
   <td><span class="tag">한아름펫</span><span class="tag">라이프펫</span></td>
 </tr>
 </tbody></table>
@@ -217,14 +220,11 @@ O/X는 색으로도 구분한다(`.ox-good`=초록 O, `.ox-bad`=회색 X, 회색
 `<details>`는 JS 없이 브라우저 기본 기능으로 접고 펼쳐진다 — 이 스킬의
 "외부 JS 없음" 원칙에 안 걸린다.
 
-**표 아래 보조 설명도 한 줄로 이어붙이지 않는다** — "추천 '—'는 ~고 인용
-'—'는 ~다"를 한 문장으로 붙이면 무슨 뜻인지 뒤섞여 읽힌다. 컬럼별로 줄을
-나눈다(`.formula-list` 재사용):
+**표 아래 보조 설명도 한 줄로 이어붙이지 않는다.** `.formula-list`로 분리한다:
 
 ```html
 <ul class="formula-list">
   <li>추천 "—" = 그 질문 유형이 추천률 분모에서 제외됨</li>
-  <li>인용 "—" = 출처 URL 자체가 없어 측정 불가 (0%가 아니라 N/A)</li>
 </ul>
 ```
 
