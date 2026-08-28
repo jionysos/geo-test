@@ -115,13 +115,19 @@ CSS (아래 전체 골격에 포함돼 있음):
 
 ## 핵심 지표 아래 산식
 
-표 바로 아래에 `.note`(작고 흐린 텍스트)로 한 줄 붙인다:
+**한 줄에 "·"로 이어붙이지 않는다** — 길어지면 줄바꿈이 어중간한 데서 끊겨
+읽기 어렵다. 지표마다 줄을 나눠서 리스트로 보여준다:
 
 ```html
-<p class="note">언급률 = 언급된 답변 수 / 전체 질문 수 · 추천률 = 추천된 답변 수
-/ 추천이 성립할 수 있는 질문 수 · 인용률 = 도메인이 출처로 표시된 답변 수 /
-출처 URL이 있는 답변 수</p>
+<ul class="formula-list">
+  <li>언급률 = 언급된 답변 수 / 전체 질문 수</li>
+  <li>추천률 = 추천된 답변 수 / 추천이 성립할 수 있는 질문 수</li>
+  <li>인용률 = 도메인이 출처로 표시된 답변 수 / 출처 URL이 있는 답변 수</li>
+</ul>
 ```
+
+`.formula-list`는 아래 전체 골격 CSS에 포함돼 있다(불릿 없이, 작고 흐린
+텍스트로, 줄 사이 여백을 좀 준다).
 
 ## 질문별 결과 — O/X 표 + 등장 브랜드 배지 + AI 응답 원문(접기)
 
@@ -233,6 +239,8 @@ JS도 이미지도 필요 없다. 브랜드별 등장 횟수를 전체 합으로
   .tier-chip.recommended{background:#232b36;color:#aab4c2}
   .tier-chip.optional{background:#1a1f26;color:#6b7684}
   .note{color:var(--muted);font-size:.85rem;margin-top:10px}
+  .formula-list{list-style:none;margin:10px 0 0;padding:0;color:var(--muted);
+    font-size:.85rem;line-height:1.9}
   .ox-good{color:var(--good);font-weight:700} .ox-bad{color:var(--muted);font-weight:700}
   .tag{display:inline-block;background:#232b36;color:#aab4c2;font-size:.78rem;
     padding:2px 8px;border-radius:999px;margin:0 4px 4px 0}
