@@ -81,17 +81,20 @@ royalcanin/royalcanin.co.kr로 보이는데 맞나요?" 식으로 한 번만 확
 
 ## 4단계 — AI 가시성 측정 질문 10개 생성
 
-`references/question-generation.md`를 읽고 실행한다. 문제인지 2·해결책탐색 2·
-브랜드제품추천 3·비교선택 2·구매전확인 1, 총 10개. **자사·경쟁사 브랜드명을 질문에
-넣지 않는다.** 질문 ID·유형을 고정해 `templates/questions.md`에 저장한다.
+`references/question-generation.md`를 읽고 실행한다. 문제인지 1·해결책탐색 2·
+브랜드제품추천 5·비교선택 1·구매전확인 1, 총 10개 — 추천 비교가 핵심 산출물이라
+그쪽 비중을 가장 크게 잡는다. **자사·경쟁사 브랜드명을 질문에 넣지 않는다.**
+질문 ID·유형을 고정해 `templates/questions.md`에 저장한다.
 
 ## 5단계 — 수동 측정 안내
 
 `references/manual-measurement.md`를 읽고 사용자에게 절차를 안내한다. 기본 측정
-모델은 ChatGPT 검색 모드. 질문마다 새 대화에서 동일 문구로 실행하고, 질문·답변
-전체·표시된 출처 URL을 복사해 `templates/responses.md`에 붙여넣도록 안내한다.
-Gemini·Perplexity·네이버 등은 선택 추가. 검색 기능이 꺼져 있으면 그 모델에 대해서는
-인용률을 계산할 수 없다고 미리 명시한다.
+모델은 ChatGPT 검색 모드(GEO 신호). 질문마다 새 대화에서 동일 문구로 실행하고,
+질문·답변 전체·표시된 출처 URL을 복사해 `templates/responses.md`에 붙여넣도록
+안내한다. Gemini·Perplexity·네이버 등 다른 모델, 그리고 ChatGPT **일반 모드**
+(검색 꺼짐 — 모델이 원래 브랜드를 아는지 보는 LLMO 신호)는 전부 선택 추가다.
+검색 기능이 꺼져 있으면 그 실행에 대해서는 인용률을 계산할 수 없다고 미리
+명시한다.
 
 ## 6단계 — 답변 분석
 
