@@ -68,7 +68,12 @@ HTML 파일**로도 만들어 `templates/report.html`에 저장한다. 외부 CD
 `.card-body`는 split의 두 카드에만 쓴다(`.split-card` 클래스로 한정) — 다른
 전체 폭 카드(표·리스트가 있는 카드)까지 세로 중앙 정렬하면 오히려 어색해진다.
 
-CSS: `.split{display:grid;grid-template-columns:1fr 1fr;gap:20px}` (align-items
+**둘을 정확히 반반(1fr 1fr)으로 나누지 않는다.** 왼쪽(게이지)은 원형 그래픽
+하나라 폭이 별로 안 필요하고, 오른쪽(핵심 지표)은 카드 4개 + 산식 문장이 있어서
+더 넓어야 산식이 한 줄에 들어온다. `grid-template-columns:2fr 3fr` 정도로
+오른쪽에 더 배정한다:
+
+CSS: `.split{display:grid;grid-template-columns:2fr 3fr;gap:20px}` (align-items
 지정 안 함 = 기본 stretch), `@media(max-width:760px){.split{grid-template-columns:1fr}}`로
 좁은 화면에선 세로로 자연스럽게 접히게 한다. 표가 있는 카드엔 `overflow-x:auto`를
 유지해서 그래도 화면이 좁으면 표 자체가 가로 스크롤되게 한다(레이아웃이 깨지는 대신).
@@ -183,11 +188,12 @@ Mention SoV는 이 카드 그리드에 넣지 않는다 — 경쟁사를 지정�
 </div>
 ```
 
-**경쟁사를 지정 안 했으면 뒤 두 카드를 지우지 않는다** — 값 대신 "N/A —
-경쟁사 미지정"을 넣는다(`.label` 아래 `.metric`에 회색으로). 추천이 0건이면
-평균 추천순위 카드는 "N/A — 추천된 적 없음". 카드 자체가 없어지면 "이 지표를
-아예 안 다룬다"처럼 보이는데, 그게 아니라 "경쟁사를 알려주면 채워진다"는
-걸 보여주고 싶어서 카드는 유지하고 값만 N/A로 한다.
+**"경쟁사 미지정"을 이유로 카드에 N/A를 넣지 않는다.** 사용자가 경쟁사를
+안 알려줬어도 6단계에서 답변에 등장한 브랜드를 이미 찾아놨으니, 그 발견된
+브랜드를 그대로 비교 대상 삼아 Recommendation SoV·평균 추천순위를 계산해서
+채운다. **평균 추천순위만 N/A일 수 있다** — 자사가 한 번도 추천 안 됐을 때뿐
+("N/A · 추천된 적 없음", `.metric.na`로 회색 처리). 비교할 브랜드가 정말 하나도
+없을 때(자사 외 등장 브랜드가 0개)만 Recommendation SoV도 N/A가 된다.
 
 카드 아래에 산식을 **한 줄에 "·"로 이어붙이지 않고** 항목마다 줄을 나눠서
 보여준다:
@@ -196,7 +202,7 @@ Mention SoV는 이 카드 그리드에 넣지 않는다 — 경쟁사를 지정�
 <ul class="formula-list">
   <li>언급률 = 언급된 답변 수 / 전체 질문 수</li>
   <li>추천률 = 추천된 답변 수 / 추천이 성립할 수 있는 질문 수</li>
-  <li>Recommendation SoV = 자사 추천 수 / (자사 + 지정 경쟁사 전체 추천 수)</li>
+  <li>Recommendation SoV = 자사 추천 수 / (자사 + 비교 대상 브랜드 전체 추천 수)</li>
   <li>평균 추천순위 = 자사가 추천된 질문들에서의 순위 평균 (낮을수록 좋음)</li>
 </ul>
 ```
@@ -207,7 +213,7 @@ Mention SoV는 이 카드 그리드에 넣지 않는다 — 경쟁사를 지정�
 `.formula-list`는 아래 전체 골격 CSS에 포함돼 있다(불릿 없이, 작고 흐린
 텍스트로, 줄 사이 여백을 좀 준다).
 
-### 전체 비교표 (경쟁사를 지정한 경우만, 카드 아래 별도 표)
+### 전체 비교표 (비교 대상 브랜드가 있으면 — 지정 경쟁사든 자동 발견이든)
 
 Mention SoV까지 포함한 전체 숫자는 카드가 아니라 일반 표로 한 번 더 보여준다:
 
@@ -216,7 +222,7 @@ Mention SoV까지 포함한 전체 숫자는 카드가 아니라 일반 표로 �
 <tbody>...</tbody></table>
 ```
 
-경쟁사를 지정 안 했으면 이 표 자체를 렌더링하지 않는다(카드의 N/A로 이미
+비교 대상 브랜드가 정말 하나도 없으면 이 표 자체를 렌더링하지 않는다(카드의 N/A로 이미
 충분히 전달됨).
 
 ## 질문별 결과 — O/X 표 + 등장 브랜드 배지 + AI 응답 원문(접기)
@@ -334,7 +340,7 @@ CSS(아래 전체 골격에 포함돼 있음):
   h1{font-size:1.6rem;margin-bottom:4px} .sub{color:var(--muted);margin-bottom:24px}
   .banner{background:#2a1f10;border:1px solid #5a3d10;color:#f1c40f;
           padding:10px 16px;border-radius:8px;margin-bottom:24px;font-size:.78rem}
-  .split{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .split{display:grid;grid-template-columns:2fr 3fr;gap:20px}
   @media(max-width:760px){.split{grid-template-columns:1fr}}
   .card{background:var(--card);border:1px solid var(--line);border-radius:12px;
         padding:20px;margin-bottom:20px}
