@@ -24,9 +24,9 @@ HTML 파일**로도 만들어 `templates/report.html`에 저장한다. 외부 CD
 ├───────────────────────┴───────────────────────┤
 │ 필수/권장/참고 표 3개 (전체 폭)                  │
 │ 질문별 결과 표 (전체 폭 — 컬럼 6개라 여기 필요)   │
-│ 발견된 브랜드 파이차트 / 자주 인용된 도메인       │
-│ 검색모드 vs 일반모드 / 사이트 문제 ↔ 답변 연결    │
-│ 우선 개선 과제 / 재측정 방법 / 부록 (전체 폭)     │
+│ 발견된 브랜드 막대그래프 / 자주 인용된 도메인     │
+│ 사이트 문제 ↔ 답변 연결 / 우선 개선 과제          │
+│ 재측정 방법 / 부록 (전체 폭)                     │
 └─────────────────────────────────────────────┘
 ```
 
@@ -34,10 +34,15 @@ HTML 파일**로도 만들어 `templates/report.html`에 저장한다. 외부 CD
 두 개만 넣는다. 필수/권장/참고 표는 게이지 카드 안이 아니라 그 아래 전체 폭
 카드로 옮긴다.
 
-CSS: `.split{display:grid;grid-template-columns:1fr 1fr;gap:20px}`,
-`@media(max-width:760px){.split{grid-template-columns:1fr}}`로 좁은 화면에선
-세로로 자연스럽게 접히게 한다. 표가 있는 카드엔 `overflow-x:auto`를 유지해서
-그래도 화면이 좁으면 표 자체가 가로 스크롤되게 한다(레이아웃이 깨지는 대신).
+**split의 두 카드는 높이를 맞춘다** — 게이지 카드가 자연히 더 크고 핵심지표
+카드가 짧으면 나란히 놓았을 때 삐뚤빼뚤해 보인다. `align-items:stretch`(기본값,
+따로 안 써도 됨 — `align-items:start`를 절대 쓰지 않는다)로 두면 그리드가 둘을
+같은 높이로 늘려준다.
+
+CSS: `.split{display:grid;grid-template-columns:1fr 1fr;gap:20px}` (align-items
+지정 안 함 = 기본 stretch), `@media(max-width:760px){.split{grid-template-columns:1fr}}`로
+좁은 화면에선 세로로 자연스럽게 접히게 한다. 표가 있는 카드엔 `overflow-x:auto`를
+유지해서 그래도 화면이 좁으면 표 자체가 가로 스크롤되게 한다(레이아웃이 깨지는 대신).
 
 ## 기술 점수 게이지 (SVG, 그대로 쓰고 각도만 계산해서 채운다)
 
@@ -74,24 +79,27 @@ CSS: `.split{display:grid;grid-template-columns:1fr 1fr;gap:20px}`,
 
 ## 필수/권장/참고 — 표 3개로 나누고, 색으로도 확실히 구분한다
 
-소제목만으로는 구분이 약하다. **테두리 색 + 칩 배지**까지 같이 써서 필수와
-권장이 눈에 확 띄게 다르게 보이도록 한다 — 필수는 강조색(파랑), 권장은 중립,
-참고는 더 흐리게:
+소제목만으로는 구분이 약하다. **테두리 색 + 칩 배지**까지 같이 써서 필수·권장·
+참고가 셋 다 눈에 확 띄게 다르게 보이도록 한다 — 필수는 파랑, 권장은 중립
+회색, 참고는 앰버(황동색) 톤. **참고를 너무 흐리게 만들지 않는다** — 이전엔
+거의 안 보일 정도로 낮춰서 "이것도 구분되는 섹션"이라는 게 안 느껴졌다.
+점수에서 빠진다는 건 칩 문구("점수 미포함")로 이미 전달되니, 색 자체는 필수·
+권장만큼 선명하게 유지한다:
 
 ```html
 <div class="tier-block required">
   <span class="tier-chip required">필수</span>
-  <table>...HTTP 200, noindex 없음 등 4개...</table>
+  <table class="tier-table">...HTTP 200, noindex 없음 등 4개...</table>
 </div>
 
 <div class="tier-block recommended">
   <span class="tier-chip recommended">권장</span>
-  <table>...sitemap, AI 크롤러별 정책 등...</table>
+  <table class="tier-table">...sitemap, AI 크롤러별 정책 등...</table>
 </div>
 
 <div class="tier-block optional">
   <span class="tier-chip optional">참고 · 점수 미포함</span>
-  <table>...llms.txt...</table>
+  <table class="tier-table">...llms.txt...</table>
 </div>
 ```
 
@@ -101,17 +109,33 @@ CSS (아래 전체 골격에 포함돼 있음):
 .tier-block{border-left:3px solid var(--line);padding-left:14px;margin-bottom:18px}
 .tier-block:last-child{margin-bottom:0}
 .tier-block.required{border-left-color:var(--accent)}
-.tier-block.recommended{border-left-color:#5a6577}
-.tier-block.optional{border-left-color:#333d4a;opacity:.85}
+.tier-block.recommended{border-left-color:#8b96a3}
+.tier-block.optional{border-left-color:#c9932e}
 .tier-chip{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;
   letter-spacing:.05em;padding:3px 9px;border-radius:5px;margin-bottom:10px}
 .tier-chip.required{background:#16264a;color:var(--accent)}
-.tier-chip.recommended{background:#232b36;color:#aab4c2}
-.tier-chip.optional{background:#1a1f26;color:#6b7684}
+.tier-chip.recommended{background:#2a323d;color:#c3ccd6}
+.tier-chip.optional{background:#3a2c10;color:#e0ac4a}
 ```
 
-이렇게 하면 소제목 텍스트만 있을 때보다 "여기서부터 필수, 여기서부터 권장"이
-스캔하듯 봐도 바로 들어온다.
+이렇게 하면 소제목 텍스트만 있을 때보다 "여기서부터 필수, 여기서부터 권장,
+여기서부터 참고"가 스캔하듯 봐도 셋 다 바로 들어온다.
+
+**세 표의 항목/상태/근거 컬럼 너비도 통일한다.** 표 세 개가 각자 자기 내용
+길이에 맞춰 컬럼 폭을 정하면(브라우저 기본 동작), 필수 표의 "항목" 폭과 권장
+표의 "항목" 폭이 서로 달라져서 세로로 훑을 때 삐뚤빼뚤해 보인다. 세 표 모두
+같은 `.tier-table`에 `table-layout:fixed`와 `<colgroup>`으로 고정 비율을
+줘서 폭을 강제로 맞춘다:
+
+```html
+<table class="tier-table">
+  <colgroup><col style="width:26%"><col style="width:14%"><col></colgroup>
+  <thead>...</thead><tbody>...</tbody>
+</table>
+```
+
+`.tier-table{table-layout:fixed}`를 CSS에 추가하고, 모든 tier 표에 이
+colgroup(항목 26% · 상태 14% · 근거 나머지)을 그대로 반복해서 쓴다.
 
 ## 핵심 지표 아래 산식
 
@@ -163,37 +187,66 @@ O/X는 색으로도 구분한다(`.ox-good`=초록 O, `.ox-bad`=회색 X, 회색
 `<details>`는 JS 없이 브라우저 기본 기능으로 접고 펼쳐진다 — 이 스킬의
 "외부 JS 없음" 원칙에 안 걸린다.
 
-## 답변에 등장한 브랜드 — 도넛 파이차트
+**표 아래 보조 설명도 한 줄로 이어붙이지 않는다** — "추천 '—'는 ~고 인용
+'—'는 ~다"를 한 문장으로 붙이면 무슨 뜻인지 뒤섞여 읽힌다. 컬럼별로 줄을
+나눈다(`.formula-list` 재사용):
 
-표만 나열하지 않고 `conic-gradient`로 그린 순수 CSS 도넛 차트를 옆에 붙인다.
-JS도 이미지도 필요 없다. 브랜드별 등장 횟수를 전체 합으로 나눠 누적 퍼센트
-구간을 계산해서 `conic-gradient`에 넣는다:
+```html
+<ul class="formula-list">
+  <li>추천 "—" = 그 질문 유형이 추천률 분모에서 제외됨</li>
+  <li>인용 "—" = 출처 URL 자체가 없어 측정 불가 (0%가 아니라 N/A)</li>
+</ul>
+```
+
+브랜드 표기 재확인 같은 별개 내용(예: "OO·OO 및 관련 제품명을 원문에서 다시
+확인했으나 실제로 없었다")은 이 리스트에 섞지 말고 별도 `<p class="note">`로
+분리한다 — 컬럼 설명과 다른 종류의 정보라서 같이 나열하면 산식 목록인지
+일반 코멘트인지 헷갈린다.
+
+## 답변에 등장한 브랜드 — 막대그래프 (파이차트 대신)
+
+원형 차트보다 막대그래프가 값을 비교하기 쉽고 카드 폭도 꽉 채울 수 있다.
+**막대는 최댓값 기준으로 폭을 채운다**(전체 합 기준 아니다 — 합 기준으로
+하면 브랜드가 여럿일 때 막대가 다 짧아져서 폭이 안 찬다). 막대 안에는 개수와
+전체 대비 비율(%)을 같이 써넣는다:
 
 ```
-브랜드 A 40%, B 30%, C 30% → conic-gradient(
-  colorA 0% 40%, colorB 40% 70%, colorC 70% 100%)
+폭% = (그 브랜드 등장 수 / 최댓값) × 100
+막대 안 표시 텍스트 = "{등장 수} ({전체 합 대비 비율}%)"
 ```
 
 ```html
-<div class="pie-wrap">
-  <div class="pie" style="background:conic-gradient(
-    #6ea0ff 0% 33.3%, #f39c12 33.3% 50%, #9b59b6 50% 66.7%,
-    #1abc9c 66.7% 83.3%, #e91e8c 83.3% 100%)">
-    <div class="pie-hole"></div>
+<div class="bars">
+  <div class="bar-row">
+    <span class="bar-label">라이프펫</span>
+    <div class="bar-track"><div class="bar-fill" style="width:100%;background:#6ea0ff">2 (33%)</div></div>
   </div>
-  <ul class="legend">
-    <li><span class="dot" style="background:#6ea0ff"></span>라이프펫 — 2</li>
-    <li><span class="dot" style="background:#f39c12"></span>한아름펫/페티널 — 1</li>
-    <li><span class="dot" style="background:#9b59b6"></span>펫생각 — 1</li>
-    <li><span class="dot" style="background:#1abc9c"></span>인트라젠 — 1</li>
-    <li><span class="dot" style="background:#e91e8c"></span>베터 — 1</li>
-  </ul>
+  <div class="bar-row">
+    <span class="bar-label">한아름펫/페티널</span>
+    <div class="bar-track"><div class="bar-fill" style="width:50%;background:#f39c12">1 (17%)</div></div>
+  </div>
+  <div class="bar-row">
+    <span class="bar-label">펫생각</span>
+    <div class="bar-track"><div class="bar-fill" style="width:50%;background:#9b59b6">1 (17%)</div></div>
+  </div>
 </div>
 ```
 
-색 팔레트는 고정 5색(`#6ea0ff #f39c12 #9b59b6 #1abc9c #e91e8c`)을 순서대로
-쓰고, 브랜드가 5개보다 많으면 나머지는 "기타"로 묶어서 색 하나를 더 배정한다
-(무한정 늘리지 않는다). 브랜드가 1개뿐이면 파이차트 의미가 없으니 표만 쓴다.
+CSS(아래 전체 골격에 포함돼 있음):
+
+```css
+.bars{display:flex;flex-direction:column;gap:10px}
+.bar-row{display:flex;align-items:center;gap:14px}
+.bar-label{width:150px;flex-shrink:0;font-size:.88rem;text-align:right}
+.bar-track{flex:1;background:#0e1319;border-radius:6px;height:30px;overflow:hidden}
+.bar-fill{height:100%;display:flex;align-items:center;padding-left:10px;
+  color:#0b0f14;font-weight:700;font-size:.82rem;border-radius:6px;white-space:nowrap}
+```
+
+색 팔레트는 고정 5색(`#6ea0ff #f39c12 #9b59b6 #1abc9c #e91e8c`)을 브랜드
+등장 순서대로 배정하고, 5개보다 많으면 나머지는 "기타"로 묶어서 색 하나를
+더 쓴다(무한정 늘리지 않는다). 브랜드가 1개뿐이면 막대그래프도 의미가 없으니
+표만 쓴다.
 
 ## 전체 페이지 골격 (인라인 CSS)
 
@@ -213,7 +266,7 @@ JS도 이미지도 필요 없다. 브랜드별 등장 횟수를 전체 합으로
   h1{font-size:1.6rem;margin-bottom:4px} .sub{color:var(--muted);margin-bottom:24px}
   .banner{background:#2a1f10;border:1px solid #5a3d10;color:#f1c40f;
           padding:12px 16px;border-radius:8px;margin-bottom:24px;font-size:.92rem}
-  .split{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:20px}
   @media(max-width:760px){.split{grid-template-columns:1fr}}
   .card{background:var(--card);border:1px solid var(--line);border-radius:12px;
         padding:20px;margin-bottom:20px}
@@ -224,6 +277,7 @@ JS도 이미지도 필요 없다. 브랜드별 등장 횟수를 전체 합으로
   table{width:100%;border-collapse:collapse;font-size:.92rem}
   th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
   th{color:var(--muted);font-weight:600;white-space:nowrap}
+  .tier-table{table-layout:fixed}
   .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.8rem}
   .b-good{background:#123a24;color:var(--good)} .b-warn{background:#3a2f0f;color:var(--warn)}
   .b-bad{background:#3a1414;color:var(--bad)}
@@ -231,13 +285,13 @@ JS도 이미지도 필요 없다. 브랜드별 등장 횟수를 전체 합으로
   .tier-block{border-left:3px solid var(--line);padding-left:14px;margin-bottom:18px}
   .tier-block:last-child{margin-bottom:0}
   .tier-block.required{border-left-color:var(--accent)}
-  .tier-block.recommended{border-left-color:#5a6577}
-  .tier-block.optional{border-left-color:#333d4a;opacity:.85}
+  .tier-block.recommended{border-left-color:#8b96a3}
+  .tier-block.optional{border-left-color:#c9932e}
   .tier-chip{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;
     letter-spacing:.05em;padding:3px 9px;border-radius:5px;margin-bottom:10px}
   .tier-chip.required{background:#16264a;color:var(--accent)}
-  .tier-chip.recommended{background:#232b36;color:#aab4c2}
-  .tier-chip.optional{background:#1a1f26;color:#6b7684}
+  .tier-chip.recommended{background:#2a323d;color:#c3ccd6}
+  .tier-chip.optional{background:#3a2c10;color:#e0ac4a}
   .note{color:var(--muted);font-size:.85rem;margin-top:10px}
   .formula-list{list-style:none;margin:10px 0 0;padding:0;color:var(--muted);
     font-size:.85rem;line-height:1.9}
@@ -247,13 +301,12 @@ JS도 이미지도 필요 없다. 브랜드별 등장 횟수를 전체 합으로
   details{margin-bottom:8px;border:1px solid var(--line);border-radius:8px;padding:8px 12px}
   summary{cursor:pointer;color:var(--accent);font-size:.9rem}
   details p{margin:8px 0 2px;font-size:.88rem;color:var(--text);white-space:pre-wrap}
-  .pie-wrap{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
-  .pie{width:150px;height:150px;border-radius:50%;position:relative;flex-shrink:0}
-  .pie-hole{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-    width:82px;height:82px;border-radius:50%;background:var(--card)}
-  .legend{list-style:none;margin:0;padding:0;font-size:.88rem}
-  .legend li{margin-bottom:6px}
-  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px}
+  .bars{display:flex;flex-direction:column;gap:10px}
+  .bar-row{display:flex;align-items:center;gap:14px}
+  .bar-label{width:150px;flex-shrink:0;font-size:.88rem;text-align:right}
+  .bar-track{flex:1;background:#0e1319;border-radius:6px;height:30px;overflow:hidden}
+  .bar-fill{height:100%;display:flex;align-items:center;padding-left:10px;
+    color:#0b0f14;font-weight:700;font-size:.82rem;border-radius:6px;white-space:nowrap}
   ul{margin:0;padding-left:20px}
 </style>
 </head>
@@ -265,14 +318,14 @@ JS도 이미지도 필요 없다. 브랜드별 등장 횟수를 전체 합으로
 
   <div class="split">
     <div class="card"><h2>사이트 기술 점수</h2>(게이지 + 등급만 — 표는 아래로)</div>
-    <div class="card"><h2>핵심 지표</h2>(숫자 카드 3개 + 산식 .note만)</div>
+    <div class="card"><h2>핵심 지표</h2>(숫자 카드 3개 + 산식 .formula-list만)</div>
   </div>
 
   <!-- 아래부터는 전체 폭 — 컬럼 많은 표·차트가 있는 섹션은 전부 여기 -->
-  <div class="card"><h2>사이트 기술 진단 상세</h2>(필수/권장/참고 3표 삽입)</div>
+  <div class="card"><h2>사이트 기술 진단 상세</h2>(필수/권장/참고 3표 삽입, 각 table.tier-table + colgroup)</div>
   <div class="card"><h2>질문별 결과</h2>(O/X표 + 등장브랜드 배지 + 질문별 details 삽입)</div>
-  <div class="card"><h2>답변에서 발견된 브랜드</h2>(파이차트+범례 삽입, 브랜드 1개뿐이면 표만)</div>
-  <!-- 자주 인용된 도메인 / 검색모드 vs 일반모드 카드도 여기 순서대로 추가 -->
+  <div class="card"><h2>답변에서 발견된 브랜드</h2>(막대그래프 삽입, 브랜드 1개뿐이면 표만)</div>
+  <!-- 자주 인용된 도메인 카드도 여기 순서대로 추가 -->
   <div class="card"><h2>사이트 문제 ↔ 실제 AI 답변 연결</h2>(내용 삽입)</div>
   <div class="card"><h2>우선 개선 과제</h2>(내용 삽입)</div>
   <div class="card"><h2>재측정 방법</h2>(내용 삽입)</div>
