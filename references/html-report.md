@@ -39,6 +39,35 @@ HTML 파일**로도 만들어 `templates/report.html`에 저장한다. 외부 CD
 따로 안 써도 됨 — `align-items:start`를 절대 쓰지 않는다)로 두면 그리드가 둘을
 같은 높이로 늘려준다.
 
+**높이만 맞추고 끝내지 않는다 — 늘어난 공간 안에서 내용물도 채운다.** 카드
+높이를 억지로 늘려도 내용이 위쪽에만 뭉쳐있으면 아래쪽에 휑한 빈 공간이 남는다.
+제목(`h2`)은 항상 카드 맨 위에 고정하되, **제목 아래 본문을 `.card-body`로
+감싸서 남은 높이 안에서 세로 중앙 정렬**한다:
+
+```html
+<section class="card split-card">
+  <h2>사이트 기술 점수</h2>
+  <div class="card-body">
+    <div class="gauge">...</div>
+  </div>
+</section>
+<section class="card split-card">
+  <h2>핵심 지표</h2>
+  <div class="card-body">
+    <div class="metrics">...</div>
+    <ul class="formula-list">...</ul>
+  </div>
+</section>
+```
+
+```css
+.split-card{display:flex;flex-direction:column}
+.split-card .card-body{flex:1;display:flex;flex-direction:column;justify-content:center}
+```
+
+`.card-body`는 split의 두 카드에만 쓴다(`.split-card` 클래스로 한정) — 다른
+전체 폭 카드(표·리스트가 있는 카드)까지 세로 중앙 정렬하면 오히려 어색해진다.
+
 CSS: `.split{display:grid;grid-template-columns:1fr 1fr;gap:20px}` (align-items
 지정 안 함 = 기본 stretch), `@media(max-width:760px){.split{grid-template-columns:1fr}}`로
 좁은 화면에선 세로로 자연스럽게 접히게 한다. 표가 있는 카드엔 `overflow-x:auto`를
@@ -251,6 +280,11 @@ CSS(아래 전체 골격에 포함돼 있음):
 
 ## 전체 페이지 골격 (인라인 CSS)
 
+배너에 문장이 두 개 이상 들어가면(예: 한계 고지 + 기술 점수는 별도 지표라는
+설명) **한 문단으로 이어붙이지 않는다** — 브라우저가 아무 데서나 줄바꿈해서
+단어 중간이 잘리기도 한다. 문장 사이에 `<br>`을 넣어 각자 한 줄로 시작하게
+한다(위 골격의 `.banner` 예시 참고).
+
 ```html
 <!DOCTYPE html>
 <html lang="ko">
@@ -271,6 +305,8 @@ CSS(아래 전체 골격에 포함돼 있음):
   @media(max-width:760px){.split{grid-template-columns:1fr}}
   .card{background:var(--card);border:1px solid var(--line);border-radius:12px;
         padding:20px;margin-bottom:20px}
+  .split-card{display:flex;flex-direction:column}
+  .split-card .card-body{flex:1;display:flex;flex-direction:column;justify-content:center}
   .gauge{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:12px}
   .gauge-score{font-size:2rem;font-weight:700;margin-top:-8px}
   .gauge-max{font-size:1rem;color:var(--muted);font-weight:400}
@@ -315,11 +351,12 @@ CSS(아래 전체 골격에 포함돼 있음):
 <div class="wrap">
   <h1>{브랜드명} GEO 스냅샷</h1>
   <div class="sub">측정일자: {날짜} · 질문 5개 · 단일 시점</div>
-  <div class="banner">⚠ 질문 5개, 단일 시점, 반복 측정 없음의 스냅샷입니다. 추세가 아니라 현재 한 장의 사진으로 읽어주세요.</div>
+  <div class="banner">⚠ 질문 5개, 단일 시점, 반복 측정 없음의 스냅샷입니다. 추세가 아니라 현재 한 장의 사진으로 읽어주세요.
+  <br>아래 사이트 기술 점수는 HTTP 응답·HTML·메타 태그 등 확인 가능한 사실 기준의 별도 지표입니다.</div>
 
   <div class="split">
-    <div class="card"><h2>사이트 기술 점수</h2>(게이지 + 등급만 — 표는 아래로)</div>
-    <div class="card"><h2>핵심 지표</h2>(숫자 카드 3개 + 산식 .formula-list만)</div>
+    <section class="card split-card"><h2>사이트 기술 점수</h2><div class="card-body">(게이지 + 등급만 — 표는 아래로)</div></section>
+    <section class="card split-card"><h2>핵심 지표</h2><div class="card-body">(숫자 카드 3개 + 산식 .formula-list만)</div></section>
   </div>
 
   <!-- 아래부터는 전체 폭 — 컬럼 많은 표·차트가 있는 섹션은 전부 여기 -->
