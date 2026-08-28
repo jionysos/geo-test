@@ -175,25 +175,27 @@ colgroup(항목 26% · 상태 14% · 근거 나머지)을 그대로 반복해서
 ## 핵심 지표 카드 — 4개, 2×2
 
 `.metrics{grid-template-columns:repeat(2,1fr)}`에 카드 4개를 넣으면 자연히
-2행 2열이 된다: **언급률 · 추천률 · Recommendation SoV · 평균 추천순위.**
-Mention SoV는 이 카드 그리드에 넣지 않는다 — 경쟁사를 지정한 경우 아래
+2행 2열이 된다: **언급률 · 추천률 · 추천 SoV · 평균 추천순위.**
+언급 SoV는 이 카드 그리드에 넣지 않는다 — 경쟁사를 지정한 경우 아래
 전체 비교표(표 형식, 카드 아님)에만 넣는다.
 
 ```html
 <div class="metrics">
   <div class="metric-card"><div class="label">{브랜드명} 언급률</div><div class="metric">3/5 · 60%</div></div>
   <div class="metric-card"><div class="label">{브랜드명} 추천률</div><div class="metric">2/4 · 50%</div></div>
-  <div class="metric-card"><div class="label">Recommendation SoV</div><div class="metric">33%</div></div>
+  <div class="metric-card"><div class="label">추천 SoV</div><div class="metric">33%</div></div>
   <div class="metric-card"><div class="label">평균 추천순위</div><div class="metric">1.5위</div></div>
 </div>
 ```
 
 **"경쟁사 미지정"을 이유로 카드에 N/A를 넣지 않는다.** 사용자가 경쟁사를
 안 알려줬어도 6단계에서 답변에 등장한 브랜드를 이미 찾아놨으니, 그 발견된
-브랜드를 그대로 비교 대상 삼아 Recommendation SoV·평균 추천순위를 계산해서
-채운다. **평균 추천순위만 N/A일 수 있다** — 자사가 한 번도 추천 안 됐을 때뿐
-("N/A · 추천된 적 없음", `.metric.na`로 회색 처리). 비교할 브랜드가 정말 하나도
-없을 때(자사 외 등장 브랜드가 0개)만 Recommendation SoV도 N/A가 된다.
+브랜드를 그대로 비교 대상 삼아 추천 SoV·평균 추천순위를 계산해서
+채운다. **평균 추천순위만 계산이 안 될 수 있다** — 자사가 한 번도 추천 안 됐을
+때뿐이다. 이때는 "N/A"나 "N/A · 추천된 적 없음"처럼 쓰지 않고 그냥 **"-"**
+한 글자만 `.metric.na`로 회색 처리해서 보여준다. 비교할 브랜드가 정말 하나도
+없을 때(자사 외 등장 브랜드가 0개)만 추천 SoV도 N/A가 된다(이건 그대로 "N/A"
+텍스트를 쓴다 — "-"는 평균 추천순위에만 쓰는 표기다).
 
 카드 아래에 산식을 **한 줄에 "·"로 이어붙이지 않고** 항목마다 줄을 나눠서
 보여준다:
@@ -202,7 +204,7 @@ Mention SoV는 이 카드 그리드에 넣지 않는다 — 경쟁사를 지정�
 <ul class="formula-list">
   <li>언급률 = 언급된 답변 수 / 전체 질문 수</li>
   <li>추천률 = 추천된 답변 수 / 추천이 성립할 수 있는 질문 수</li>
-  <li>Recommendation SoV = 자사 추천 수 / (자사 + 비교 대상 브랜드 전체 추천 수)</li>
+  <li>추천 SoV = 자사 추천 수 / (자사 + 비교 대상 브랜드 전체 추천 수)</li>
   <li>평균 추천순위 = 자사가 추천된 질문들에서의 순위 평균 (낮을수록 좋음)</li>
 </ul>
 ```
@@ -215,10 +217,10 @@ Mention SoV는 이 카드 그리드에 넣지 않는다 — 경쟁사를 지정�
 
 ### 전체 비교표 (비교 대상 브랜드가 있으면 — 지정 경쟁사든 자동 발견이든)
 
-Mention SoV까지 포함한 전체 숫자는 카드가 아니라 일반 표로 한 번 더 보여준다:
+언급 SoV까지 포함한 전체 숫자는 카드가 아니라 일반 표로 한 번 더 보여준다:
 
 ```html
-<table><thead><tr><th>브랜드</th><th>언급률</th><th>추천률</th><th>Mention SoV</th><th>Recommendation SoV</th><th>평균 추천순위</th></tr></thead>
+<table><thead><tr><th>브랜드</th><th>언급률</th><th>추천률</th><th>언급 SoV</th><th>추천 SoV</th><th>평균 추천순위</th></tr></thead>
 <tbody>...</tbody></table>
 ```
 
