@@ -1,7 +1,8 @@
-# geo-snapshot
+# geo-test
 
 **브랜드가 ChatGPT·Perplexity·네이버 AI 답변에 얼마나, 경쟁사 대비 어떻게
-나오는지 확인하는 무료 Claude Code 스킬.**
+나오는지 확인하는 무료 스킬.** SKILL.md 표준을 쓰는 Claude Code·Codex CLI에서
+동일하게 작동합니다.
 
 기술적 SEO 진단만 하는 도구는 많고, "실제 AI 답변에서 우리 브랜드와 경쟁사가
 어떻게 다르게 나오는지"를 직접 비교해주는 무료 도구는 별로 없어서 만들었습니다.
@@ -33,19 +34,27 @@
 
 ## 설치
 
+**Claude Code**
+
 ```bash
 # 프로젝트 스킬로 (해당 프로젝트에서만)
-git clone https://github.com/<your-org>/geo-snapshot.git .claude/skills/geo-snapshot
+git clone git@github.com:jionysos/geo-test.git .claude/skills/geo-test
 
 # 또는 개인 스킬로 (모든 프로젝트에서)
-git clone https://github.com/<your-org>/geo-snapshot.git ~/.claude/skills/geo-snapshot
+git clone git@github.com:jionysos/geo-test.git ~/.claude/skills/geo-test
 ```
 
-Claude Code에서:
+```
+/geo-test 우리 브랜드 AI 가시성 진단해줘
+```
 
+**Codex CLI** (SKILL.md는 Claude Code·Codex CLI 공용 표준이라 그대로 씀)
+
+```bash
+git clone git@github.com:jionysos/geo-test.git ~/.codex/skills/geo-test
 ```
-/geo-snapshot 우리 브랜드 AI 가시성 진단해줘
-```
+
+Codex 세션에서 자연어로 요청하면 자동 매칭되거나, `$geo-test`로 명시 호출.
 
 ## 사용 흐름
 
