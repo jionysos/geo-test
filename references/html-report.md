@@ -6,19 +6,33 @@ HTML 파일**로도 만들어 `templates/report.html`에 저장한다. 외부 CD
 그대로 보여야 한다. 이건 "대시보드"(실시간·다회차 모니터링)가 아니라 **한 번
 찍은 스냅샷을 보기 좋게 렌더링하는 것**일 뿐이라 무료 범위 안에 든다.
 
-## 구조 (report.md 섹션과 1:1 대응)
+## 레이아웃 — 세로로 줄줄 쌓지 않는다, 좌우 2단으로 나눈다
 
-1. 헤더: 브랜드명 + "ChatGPT GEO 스냅샷" / "멀티모델 GEO 스냅샷" + 측정일자
-2. 한계 배너 (눈에 띄는 색으로, 맨 위)
-3. **기술 점수 게이지** (아래 SVG)
-4. 핵심 지표 카드/표 (언급률·추천률·인용률·SoV)
-5. 자사·경쟁사 비교표
-6. 자사가 빠진 질문 / 경쟁사가 강한 질문
-7. 자주 인용된 도메인
-8. 테크니컬 문제 ↔ AI 답변 연결
-9. 우선 개선 과제
-10. 재측정 방법
-11. 부록: 질문 5개
+기술 진단(사이트가 크롤러에게 어떻게 보이는가)과 GEO 실측(AI 답변에서 실제로
+어떻게 나오는가)은 서로 다른 질문에 대한 답이다. 하나의 세로 스크롤에 순서대로
+쌓지 말고, **왼쪽에 테크니컬, 오른쪽에 GEO 가시성(질문·응답 결과)** 을 나란히
+놓는다. 헤더/한계배너와, 양쪽을 종합하는 섹션(테크니컬 문제↔AI 답변 연결·우선
+개선과제·재측정방법·부록)만 전체 폭으로 위/아래에 둔다:
+
+```
+┌─────────────────────────────────────────────┐
+│ 헤더 + 한계 배너 (전체 폭)                     │
+├───────────────────────┬───────────────────────┤
+│ 왼쪽: 테크니컬          │ 오른쪽: GEO 가시성      │
+│ - 사이트 기술 점수      │ - 핵심 지표             │
+│   (게이지+필수/권장/참고)│ - 질문별 결과            │
+│                        │ - 답변에서 발견된 브랜드  │
+│                        │ - 자사가 빠진 질문        │
+│                        │ - 자주 인용된 도메인      │
+├───────────────────────┴───────────────────────┤
+│ 사이트 문제 ↔ 실제 AI 답변 연결 (전체 폭, 종합)  │
+│ 우선 개선 과제 / 재측정 방법 / 부록 (전체 폭)     │
+└─────────────────────────────────────────────┘
+```
+
+CSS: `.split{display:grid;grid-template-columns:1fr 1fr;gap:20px}`,
+`@media(max-width:760px){.split{grid-template-columns:1fr}}`로 좁은 화면에선
+세로로 자연스럽게 접히게 한다.
 
 ## 기술 점수 게이지 (SVG, 그대로 쓰고 각도만 계산해서 채운다)
 
@@ -49,30 +63,50 @@ HTML 파일**로도 만들어 `templates/report.html`에 저장한다. 외부 CD
 
 예시(68점): 회전각 = -90 + 68×1.8 = 32.4 → `transform="rotate(32.4 100 100)"`.
 
-바늘 색 구간과 등급 표는 항상 같이 붙인다 — 게이지만 덩그러니 있으면 숫자가
-뭘 의미하는지 안 와닿는다. 게이지 아래에 "68점(보완 필요) — robots.txt만
-걸림" 한 줄을 반드시 붙인다(tech-audit.md 보고 형식과 동일).
+**`.gauge-grade`엔 등급만 적는다 — "필수 항목 전부 통과" 같은 부연은 붙이지
+않는다.** 아래 필수/권장/참고 표가 색으로 이미 다 보여주는 내용을 문장으로
+반복할 필요가 없다. 등급 하나로 충분하다: "양호", "보완 필요" 같은 단어만.
 
-**게이지 아래 항목 표는 "구분"(필수/권장/참고) 없이 단일 표로 늘어놓지 않는다.**
-"필수 항목 전부 통과" 같은 요약 문구는 권장·참고 항목이 실패해도 나올 수 있는데,
-표에 구분이 안 보이면 사용자가 "분명 빨간 게 있는데 왜 통과라는 거지?"라고
-헷갈린다(실제로 이 실수가 났었다). 표를 하나로 합치지 말고 **필수/권장/참고
-소제목으로 나눠서 각각 따로 렌더링**한다:
+## 필수/권장/참고 — 표 3개로 나누고, 색으로도 확실히 구분한다
+
+소제목만으로는 구분이 약하다. **테두리 색 + 칩 배지**까지 같이 써서 필수와
+권장이 눈에 확 띄게 다르게 보이도록 한다 — 필수는 강조색(파랑), 권장은 중립,
+참고는 더 흐리게:
 
 ```html
-<h3 class="tier">필수</h3>
-<table>...HTTP 200, noindex 없음 등 4개...</table>
+<div class="tier-block required">
+  <span class="tier-chip required">필수</span>
+  <table>...HTTP 200, noindex 없음 등 4개...</table>
+</div>
 
-<h3 class="tier">권장</h3>
-<table>...sitemap, AI 크롤러별 정책 등...</table>
+<div class="tier-block recommended">
+  <span class="tier-chip recommended">권장</span>
+  <table>...sitemap, AI 크롤러별 정책 등...</table>
+</div>
 
-<h3 class="tier">참고 (점수 미포함)</h3>
-<table>...llms.txt...</table>
+<div class="tier-block optional">
+  <span class="tier-chip optional">참고 · 점수 미포함</span>
+  <table>...llms.txt...</table>
+</div>
 ```
 
-`.tier` 클래스는 아래 전체 페이지 골격의 CSS에 이미 포함돼 있다. 이렇게 나누면
-"필수는 다 초록인데 권장 칸에 빨간 게 있구나"가 표만 봐도 바로 보인다 — 요약
-문구를 다시 안 읽어도 된다.
+CSS (아래 전체 골격에 포함돼 있음):
+
+```css
+.tier-block{border-left:3px solid var(--line);padding-left:14px;margin-bottom:18px}
+.tier-block:last-child{margin-bottom:0}
+.tier-block.required{border-left-color:var(--accent)}
+.tier-block.recommended{border-left-color:#5a6577}
+.tier-block.optional{border-left-color:#333d4a;opacity:.85}
+.tier-chip{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.05em;padding:3px 9px;border-radius:5px;margin-bottom:10px}
+.tier-chip.required{background:#16264a;color:var(--accent)}
+.tier-chip.recommended{background:#232b36;color:#aab4c2}
+.tier-chip.optional{background:#1a1f26;color:#6b7684}
+```
+
+이렇게 하면 소제목 텍스트만 있을 때보다 "여기서부터 필수, 여기서부터 권장"이
+스캔하듯 봐도 바로 들어온다.
 
 ## 전체 페이지 골격 (인라인 CSS)
 
@@ -88,13 +122,15 @@ HTML 파일**로도 만들어 `templates/report.html`에 저장한다. 외부 CD
   *{box-sizing:border-box}
   body{margin:0;padding:32px;background:var(--bg);color:var(--text);
        font-family:-apple-system,"Pretendard","Malgun Gothic",sans-serif;line-height:1.6}
-  .wrap{max-width:860px;margin:0 auto}
+  .wrap{max-width:1040px;margin:0 auto}
   h1{font-size:1.6rem;margin-bottom:4px} .sub{color:var(--muted);margin-bottom:24px}
   .banner{background:#2a1f10;border:1px solid #5a3d10;color:#f1c40f;
           padding:12px 16px;border-radius:8px;margin-bottom:24px;font-size:.92rem}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+  @media(max-width:760px){.split{grid-template-columns:1fr}}
   .card{background:var(--card);border:1px solid var(--line);border-radius:12px;
         padding:20px;margin-bottom:20px}
-  .gauge{display:flex;flex-direction:column;align-items:center;text-align:center}
+  .gauge{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:12px}
   .gauge-score{font-size:2rem;font-weight:700;margin-top:-8px}
   .gauge-max{font-size:1rem;color:var(--muted);font-weight:400}
   .gauge-grade{color:var(--muted)}
@@ -105,9 +141,16 @@ HTML 파일**로도 만들어 `templates/report.html`에 저장한다. 외부 CD
   .b-good{background:#123a24;color:var(--good)} .b-warn{background:#3a2f0f;color:var(--warn)}
   .b-bad{background:#3a1414;color:var(--bad)}
   h2{font-size:1.05rem;margin:0 0 12px;color:var(--accent)}
-  .tier{font-size:.85rem;color:var(--muted);text-transform:uppercase;
-        letter-spacing:.05em;margin:16px 0 6px}
-  .tier:first-child{margin-top:0}
+  .tier-block{border-left:3px solid var(--line);padding-left:14px;margin-bottom:18px}
+  .tier-block:last-child{margin-bottom:0}
+  .tier-block.required{border-left-color:var(--accent)}
+  .tier-block.recommended{border-left-color:#5a6577}
+  .tier-block.optional{border-left-color:#333d4a;opacity:.85}
+  .tier-chip{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;
+    letter-spacing:.05em;padding:3px 9px;border-radius:5px;margin-bottom:10px}
+  .tier-chip.required{background:#16264a;color:var(--accent)}
+  .tier-chip.recommended{background:#232b36;color:#aab4c2}
+  .tier-chip.optional{background:#1a1f26;color:#6b7684}
   ul{margin:0;padding-left:20px}
 </style>
 </head>
@@ -117,10 +160,23 @@ HTML 파일**로도 만들어 `templates/report.html`에 저장한다. 외부 CD
   <div class="sub">측정일자: {날짜} · 질문 5개 · 단일 시점</div>
   <div class="banner">⚠ 질문 5개, 단일 시점, 반복 측정 없음의 스냅샷입니다. 추세가 아니라 현재 한 장의 사진으로 읽어주세요.</div>
 
-  <div class="card"><h2>사이트 기술 점수</h2>(게이지 삽입)</div>
-  <div class="card"><h2>핵심 지표</h2>(표 삽입)</div>
-  <div class="card"><h2>자사·경쟁사 비교</h2>(표 삽입)</div>
-  <!-- 이하 report.md 나머지 섹션도 각각 .card 하나씩 -->
+  <div class="split">
+    <div>
+      <div class="card"><h2>사이트 기술 점수</h2>(게이지 + 필수/권장/참고 3표 삽입)</div>
+    </div>
+    <div>
+      <div class="card"><h2>핵심 지표</h2>(표 삽입)</div>
+      <div class="card"><h2>질문별 결과</h2>(표 삽입)</div>
+      <div class="card"><h2>답변에서 발견된 브랜드</h2>(표 삽입)</div>
+      <!-- 자사가 빠진 질문 / 자주 인용된 도메인 등 GEO 관련 카드도 이 오른쪽 열에 계속 추가 -->
+    </div>
+  </div>
+
+  <!-- 아래부터는 전체 폭 — 좌우를 종합하는 내용 -->
+  <div class="card"><h2>사이트 문제 ↔ 실제 AI 답변 연결</h2>(내용 삽입)</div>
+  <div class="card"><h2>우선 개선 과제</h2>(내용 삽입)</div>
+  <div class="card"><h2>재측정 방법</h2>(내용 삽입)</div>
+  <div class="card"><h2>부록 · 측정 질문 5개</h2>(표 삽입)</div>
 </div>
 </body>
 </html>
