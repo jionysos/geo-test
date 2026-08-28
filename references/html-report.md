@@ -24,7 +24,7 @@ HTML 파일**로도 만들어 `templates/report.html`에 저장한다. 외부 CD
 ├───────────────────────┴───────────────────────┤
 │ 필수/권장/참고 표 3개 (전체 폭)                  │
 │ 질문별 결과 표 (전체 폭 — 컬럼 6개라 여기 필요)   │
-│ 발견된 브랜드 막대그래프 / 자주 인용된 도메인     │
+│ 발견된 경쟁사 막대그래프 / 자주 인용된 도메인     │
 │ 사이트 문제 ↔ 답변 연결 / 우선 개선 과제          │
 │ 재측정 방법 / 부록 (전체 폭)                     │
 └─────────────────────────────────────────────┘
@@ -204,7 +204,7 @@ O/X는 색으로도 구분한다(`.ox-good`=초록 O, `.ox-bad`=회색 X, 회색
 분리한다 — 컬럼 설명과 다른 종류의 정보라서 같이 나열하면 산식 목록인지
 일반 코멘트인지 헷갈린다.
 
-## 답변에 등장한 브랜드 — 막대그래프 (파이차트 대신)
+## 답변에서 발견된 경쟁사 — 막대그래프 (파이차트 대신)
 
 원형 차트보다 막대그래프가 값을 비교하기 쉽고 카드 폭도 꽉 채울 수 있다.
 **막대는 최댓값 기준으로 폭을 채운다**(전체 합 기준 아니다 — 합 기준으로
@@ -266,7 +266,7 @@ CSS(아래 전체 골격에 포함돼 있음):
   .wrap{max-width:1040px;margin:0 auto}
   h1{font-size:1.6rem;margin-bottom:4px} .sub{color:var(--muted);margin-bottom:24px}
   .banner{background:#2a1f10;border:1px solid #5a3d10;color:#f1c40f;
-          padding:12px 16px;border-radius:8px;margin-bottom:24px;font-size:.92rem}
+          padding:10px 16px;border-radius:8px;margin-bottom:24px;font-size:.78rem}
   .split{display:grid;grid-template-columns:1fr 1fr;gap:20px}
   @media(max-width:760px){.split{grid-template-columns:1fr}}
   .card{background:var(--card);border:1px solid var(--line);border-radius:12px;
@@ -325,7 +325,7 @@ CSS(아래 전체 골격에 포함돼 있음):
   <!-- 아래부터는 전체 폭 — 컬럼 많은 표·차트가 있는 섹션은 전부 여기 -->
   <div class="card"><h2>사이트 기술 진단 상세</h2>(필수/권장/참고 3표 삽입, 각 table.tier-table + colgroup)</div>
   <div class="card"><h2>질문별 결과</h2>(O/X표 + 등장브랜드 배지 + 질문별 details 삽입)</div>
-  <div class="card"><h2>답변에서 발견된 브랜드</h2>(막대그래프 삽입, 브랜드 1개뿐이면 표만)</div>
+  <div class="card"><h2>답변에서 발견된 경쟁사</h2>(막대그래프 삽입, 브랜드 1개뿐이면 표만)</div>
   <!-- 자주 인용된 도메인 카드도 여기 순서대로 추가 -->
   <div class="card"><h2>사이트 문제 ↔ 실제 AI 답변 연결</h2>(내용 삽입)</div>
   <div class="card"><h2>우선 개선 과제</h2>(내용 삽입)</div>
