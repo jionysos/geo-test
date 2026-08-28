@@ -176,8 +176,7 @@ colgroup(항목 26% · 상태 14% · 근거 나머지)을 그대로 반복해서
 
 `.metrics{grid-template-columns:repeat(2,1fr)}`에 카드 4개를 넣으면 자연히
 2행 2열이 된다: **언급률 · 추천률 · 추천 SoV · 평균 추천순위.**
-언급 SoV는 이 카드 그리드에 넣지 않는다 — 경쟁사를 지정한 경우 아래
-전체 비교표(표 형식, 카드 아님)에만 넣는다.
+SoV 지표는 추천 SoV 하나뿐이다 — 언급 SoV라는 지표 자체를 만들지 않는다.
 
 ```html
 <div class="metrics">
@@ -217,10 +216,10 @@ colgroup(항목 26% · 상태 14% · 근거 나머지)을 그대로 반복해서
 
 ### 전체 비교표 (비교 대상 브랜드가 있으면 — 지정 경쟁사든 자동 발견이든)
 
-언급 SoV까지 포함한 전체 숫자는 카드가 아니라 일반 표로 한 번 더 보여준다:
+경쟁사별 숫자는 카드가 아니라 일반 표로 한 번 더 보여준다:
 
 ```html
-<table><thead><tr><th>브랜드</th><th>언급률</th><th>추천률</th><th>언급 SoV</th><th>추천 SoV</th><th>평균 추천순위</th></tr></thead>
+<table><thead><tr><th>브랜드</th><th>언급률</th><th>추천률</th><th>추천 SoV</th><th>평균 추천순위</th></tr></thead>
 <tbody>...</tbody></table>
 ```
 
