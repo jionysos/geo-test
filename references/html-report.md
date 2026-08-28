@@ -53,6 +53,27 @@ HTML 파일**로도 만들어 `templates/report.html`에 저장한다. 외부 CD
 뭘 의미하는지 안 와닿는다. 게이지 아래에 "68점(보완 필요) — robots.txt만
 걸림" 한 줄을 반드시 붙인다(tech-audit.md 보고 형식과 동일).
 
+**게이지 아래 항목 표는 "구분"(필수/권장/참고) 없이 단일 표로 늘어놓지 않는다.**
+"필수 항목 전부 통과" 같은 요약 문구는 권장·참고 항목이 실패해도 나올 수 있는데,
+표에 구분이 안 보이면 사용자가 "분명 빨간 게 있는데 왜 통과라는 거지?"라고
+헷갈린다(실제로 이 실수가 났었다). 표를 하나로 합치지 말고 **필수/권장/참고
+소제목으로 나눠서 각각 따로 렌더링**한다:
+
+```html
+<h3 class="tier">필수</h3>
+<table>...HTTP 200, noindex 없음 등 4개...</table>
+
+<h3 class="tier">권장</h3>
+<table>...sitemap, AI 크롤러별 정책 등...</table>
+
+<h3 class="tier">참고 (점수 미포함)</h3>
+<table>...llms.txt...</table>
+```
+
+`.tier` 클래스는 아래 전체 페이지 골격의 CSS에 이미 포함돼 있다. 이렇게 나누면
+"필수는 다 초록인데 권장 칸에 빨간 게 있구나"가 표만 봐도 바로 보인다 — 요약
+문구를 다시 안 읽어도 된다.
+
 ## 전체 페이지 골격 (인라인 CSS)
 
 ```html
@@ -84,6 +105,9 @@ HTML 파일**로도 만들어 `templates/report.html`에 저장한다. 외부 CD
   .b-good{background:#123a24;color:var(--good)} .b-warn{background:#3a2f0f;color:var(--warn)}
   .b-bad{background:#3a1414;color:var(--bad)}
   h2{font-size:1.05rem;margin:0 0 12px;color:var(--accent)}
+  .tier{font-size:.85rem;color:var(--muted);text-transform:uppercase;
+        letter-spacing:.05em;margin:16px 0 6px}
+  .tier:first-child{margin-top:0}
   ul{margin:0;padding-left:20px}
 </style>
 </head>
