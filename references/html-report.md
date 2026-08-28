@@ -79,12 +79,13 @@ CSS: `.split{display:grid;grid-template-columns:1fr 1fr;gap:20px}` (align-items
 
 ## 필수/권장/참고 — 표 3개로 나누고, 색으로도 확실히 구분한다
 
-소제목만으로는 구분이 약하다. **테두리 색 + 칩 배지**를 같이 쓰되, **칩
-배지 색은 셋 다 통일한다** — 필수·권장·참고 전부 강조색(파랑)으로, 핵심
-지표 같은 다른 섹션 제목과 같은 "탭"으로 읽히게 한다. 권장·참고를 다른
-톤으로 낮추면 오히려 "이것도 똑같이 구분된 섹션"이라는 느낌이 약해진다 —
-구분은 칩 색이 아니라 **왼쪽 테두리 색(필수=파랑, 권장=회색, 참고=앰버)과
-칩 안 텍스트("필수"/"권장"/"참고 · 점수 미포함")**로 한다:
+소제목만으로는 구분이 약하다. **테두리 색 + 칩 배지**를 같이 쓰되, **둘 다
+셋이 똑같은 강조색(파랑)으로 통일한다** — 필수·권장·참고 전부 같은 파랑
+테두리·같은 파랑 칩으로, 핵심 지표 같은 다른 섹션 제목과 같은 "탭"으로
+읽히게 한다. 색을 tier마다 다르게 나누면 권장·참고가 낮은 우선순위처럼
+보여서 오히려 "이것도 똑같이 구분된 섹션"이라는 느낌이 약해진다 — tier
+구분은 색이 아니라 **칩 안 텍스트("필수"/"권장"/"참고 · 점수 미포함")** 하나로
+충분히 한다:
 
 ```html
 <div class="tier-block required">
@@ -109,8 +110,8 @@ CSS (아래 전체 골격에 포함돼 있음):
 .tier-block{border-left:3px solid var(--line);padding-left:14px;margin-bottom:18px}
 .tier-block:last-child{margin-bottom:0}
 .tier-block.required{border-left-color:var(--accent)}
-.tier-block.recommended{border-left-color:#8b96a3}
-.tier-block.optional{border-left-color:#c9932e}
+.tier-block.recommended{border-left-color:var(--accent)}
+.tier-block.optional{border-left-color:var(--accent)}
 .tier-chip{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;
   letter-spacing:.05em;padding:3px 9px;border-radius:5px;margin-bottom:10px}
 .tier-chip.required{background:#16264a;color:var(--accent)}
@@ -285,8 +286,8 @@ CSS(아래 전체 골격에 포함돼 있음):
   .tier-block{border-left:3px solid var(--line);padding-left:14px;margin-bottom:18px}
   .tier-block:last-child{margin-bottom:0}
   .tier-block.required{border-left-color:var(--accent)}
-  .tier-block.recommended{border-left-color:#8b96a3}
-  .tier-block.optional{border-left-color:#c9932e}
+  .tier-block.recommended{border-left-color:var(--accent)}
+  .tier-block.optional{border-left-color:var(--accent)}
   .tier-chip{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;
     letter-spacing:.05em;padding:3px 9px;border-radius:5px;margin-bottom:10px}
   .tier-chip.required{background:#16264a;color:var(--accent)}
