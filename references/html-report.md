@@ -19,7 +19,7 @@ HTML 파일**로도 만들어 `templates/report.html`에 저장한다. 외부 CD
 │ 헤더 + 한계 배너 (전체 폭)                     │
 ├───────────────────────┬───────────────────────┤
 │ 왼쪽: 사이트 기술 점수   │ 오른쪽: 핵심 지표        │
-│ (게이지만, 필수/권장/    │ (숫자 카드 3개 + 산식만)  │
+│ (게이지만, 필수/권장/    │ (숫자 카드 4개(2×2) + 산식만)  │
 │  참고 표는 아래로 내림)  │                        │
 ├───────────────────────┴───────────────────────┤
 │ 필수/권장/참고 표 3개 (전체 폭)                  │
@@ -30,7 +30,7 @@ HTML 파일**로도 만들어 `templates/report.html`에 저장한다. 외부 CD
 └─────────────────────────────────────────────┘
 ```
 
-즉 split엔 **게이지 원형 그래픽 + 등급**과 **핵심 지표 숫자 카드 3개**, 딱 그
+즉 split엔 **게이지 원형 그래픽 + 등급**과 **핵심 지표 숫자 카드 4개(2×2)**, 딱 그
 두 개만 넣는다. 필수/권장/참고 표는 게이지 카드 안이 아니라 그 아래 전체 폭
 카드로 옮긴다.
 
@@ -167,24 +167,57 @@ CSS (아래 전체 골격에 포함돼 있음):
 `.tier-table{table-layout:fixed}`를 CSS에 추가하고, 모든 tier 표에 이
 colgroup(항목 26% · 상태 14% · 근거 나머지)을 그대로 반복해서 쓴다.
 
-## 핵심 지표 아래 산식
+## 핵심 지표 카드 — 4개, 2×2
 
-**한 줄에 "·"로 이어붙이지 않는다** — 길어지면 줄바꿈이 어중간한 데서 끊겨
-읽기 어렵다. 지표마다 줄을 나눠서 리스트로 보여준다:
+`.metrics{grid-template-columns:repeat(2,1fr)}`에 카드 4개를 넣으면 자연히
+2행 2열이 된다: **언급률 · 추천률 · Recommendation SoV · 평균 추천순위.**
+Mention SoV는 이 카드 그리드에 넣지 않는다 — 경쟁사를 지정한 경우 아래
+전체 비교표(표 형식, 카드 아님)에만 넣는다.
+
+```html
+<div class="metrics">
+  <div class="metric-card"><div class="label">{브랜드명} 언급률</div><div class="metric">3/5 · 60%</div></div>
+  <div class="metric-card"><div class="label">{브랜드명} 추천률</div><div class="metric">2/4 · 50%</div></div>
+  <div class="metric-card"><div class="label">Recommendation SoV</div><div class="metric">33%</div></div>
+  <div class="metric-card"><div class="label">평균 추천순위</div><div class="metric">1.5위</div></div>
+</div>
+```
+
+**경쟁사를 지정 안 했으면 뒤 두 카드를 지우지 않는다** — 값 대신 "N/A —
+경쟁사 미지정"을 넣는다(`.label` 아래 `.metric`에 회색으로). 추천이 0건이면
+평균 추천순위 카드는 "N/A — 추천된 적 없음". 카드 자체가 없어지면 "이 지표를
+아예 안 다룬다"처럼 보이는데, 그게 아니라 "경쟁사를 알려주면 채워진다"는
+걸 보여주고 싶어서 카드는 유지하고 값만 N/A로 한다.
+
+카드 아래에 산식을 **한 줄에 "·"로 이어붙이지 않고** 항목마다 줄을 나눠서
+보여준다:
 
 ```html
 <ul class="formula-list">
   <li>언급률 = 언급된 답변 수 / 전체 질문 수</li>
   <li>추천률 = 추천된 답변 수 / 추천이 성립할 수 있는 질문 수</li>
+  <li>Recommendation SoV = 자사 추천 수 / (자사 + 지정 경쟁사 전체 추천 수)</li>
+  <li>평균 추천순위 = 자사가 추천된 질문들에서의 순위 평균 (낮을수록 좋음)</li>
 </ul>
 ```
 
 인용률은 넣지 않는다 — `references/scoring.md` 참고("+N" 묶음 맹점 때문에
-계산하지 않기로 함). 경쟁사가 있으면 이 아래에 Mention SoV·Recommendation
-SoV도 같이 보여준다.
+계산하지 않기로 함).
 
 `.formula-list`는 아래 전체 골격 CSS에 포함돼 있다(불릿 없이, 작고 흐린
 텍스트로, 줄 사이 여백을 좀 준다).
+
+### 전체 비교표 (경쟁사를 지정한 경우만, 카드 아래 별도 표)
+
+Mention SoV까지 포함한 전체 숫자는 카드가 아니라 일반 표로 한 번 더 보여준다:
+
+```html
+<table><thead><tr><th>브랜드</th><th>언급률</th><th>추천률</th><th>Mention SoV</th><th>Recommendation SoV</th><th>평균 추천순위</th></tr></thead>
+<tbody>...</tbody></table>
+```
+
+경쟁사를 지정 안 했으면 이 표 자체를 렌더링하지 않는다(카드의 N/A로 이미
+충분히 전달됨).
 
 ## 질문별 결과 — O/X 표 + 등장 브랜드 배지 + AI 응답 원문(접기)
 
@@ -356,7 +389,7 @@ CSS(아래 전체 골격에 포함돼 있음):
 
   <div class="split">
     <section class="card split-card"><h2>사이트 기술 점수</h2><div class="card-body">(게이지 + 등급만 — 표는 아래로)</div></section>
-    <section class="card split-card"><h2>핵심 지표</h2><div class="card-body">(숫자 카드 3개 + 산식 .formula-list만)</div></section>
+    <section class="card split-card"><h2>핵심 지표</h2><div class="card-body">(숫자 카드 4개(2×2) + 산식 .formula-list만)</div></section>
   </div>
 
   <!-- 아래부터는 전체 폭 — 컬럼 많은 표·차트가 있는 섹션은 전부 여기 -->
