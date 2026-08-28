@@ -79,12 +79,12 @@ CSS: `.split{display:grid;grid-template-columns:1fr 1fr;gap:20px}` (align-items
 
 ## 필수/권장/참고 — 표 3개로 나누고, 색으로도 확실히 구분한다
 
-소제목만으로는 구분이 약하다. **테두리 색 + 칩 배지**까지 같이 써서 필수·권장·
-참고가 셋 다 눈에 확 띄게 다르게 보이도록 한다 — 필수는 파랑, 권장은 중립
-회색, 참고는 앰버(황동색) 톤. **참고를 너무 흐리게 만들지 않는다** — 이전엔
-거의 안 보일 정도로 낮춰서 "이것도 구분되는 섹션"이라는 게 안 느껴졌다.
-점수에서 빠진다는 건 칩 문구("점수 미포함")로 이미 전달되니, 색 자체는 필수·
-권장만큼 선명하게 유지한다:
+소제목만으로는 구분이 약하다. **테두리 색 + 칩 배지**를 같이 쓰되, **칩
+배지 색은 셋 다 통일한다** — 필수·권장·참고 전부 강조색(파랑)으로, 핵심
+지표 같은 다른 섹션 제목과 같은 "탭"으로 읽히게 한다. 권장·참고를 다른
+톤으로 낮추면 오히려 "이것도 똑같이 구분된 섹션"이라는 느낌이 약해진다 —
+구분은 칩 색이 아니라 **왼쪽 테두리 색(필수=파랑, 권장=회색, 참고=앰버)과
+칩 안 텍스트("필수"/"권장"/"참고 · 점수 미포함")**로 한다:
 
 ```html
 <div class="tier-block required">
@@ -114,8 +114,8 @@ CSS (아래 전체 골격에 포함돼 있음):
 .tier-chip{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;
   letter-spacing:.05em;padding:3px 9px;border-radius:5px;margin-bottom:10px}
 .tier-chip.required{background:#16264a;color:var(--accent)}
-.tier-chip.recommended{background:#2a323d;color:#c3ccd6}
-.tier-chip.optional{background:#3a2c10;color:#e0ac4a}
+.tier-chip.recommended{background:#16264a;color:var(--accent)}
+.tier-chip.optional{background:#16264a;color:var(--accent)}
 ```
 
 이렇게 하면 소제목 텍스트만 있을 때보다 "여기서부터 필수, 여기서부터 권장,
@@ -290,8 +290,8 @@ CSS(아래 전체 골격에 포함돼 있음):
   .tier-chip{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;
     letter-spacing:.05em;padding:3px 9px;border-radius:5px;margin-bottom:10px}
   .tier-chip.required{background:#16264a;color:var(--accent)}
-  .tier-chip.recommended{background:#2a323d;color:#c3ccd6}
-  .tier-chip.optional{background:#3a2c10;color:#e0ac4a}
+  .tier-chip.recommended{background:#16264a;color:var(--accent)}
+  .tier-chip.optional{background:#16264a;color:var(--accent)}
   .note{color:var(--muted);font-size:.85rem;margin-top:10px}
   .formula-list{list-style:none;margin:10px 0 0;padding:0;color:var(--muted);
     font-size:.85rem;line-height:1.9}
