@@ -19,10 +19,10 @@ HTML 파일**로도 만들어 `templates/report.html`에 저장한다. 외부 CD
 │ 헤더 + 한계 배너 (전체 폭)                     │
 ├───────────────────────┬───────────────────────┤
 │ 왼쪽: 사이트 기술 점수   │ 오른쪽: 핵심 지표        │
-│ (게이지만, 필수/권장/    │ (숫자 카드 4개(2×2) + 산식만)  │
-│  참고 표는 아래로 내림)  │                        │
+│ (접근 상태+게이지, 상세  │ (숫자 카드 4개(2×2) + 산식만)  │
+│  표는 아래로 내림)       │                        │
 ├───────────────────────┴───────────────────────┤
-│ 필수/권장/참고 표 3개 (전체 폭)                  │
+│ 접근 상태/기술 완성도/콘텐츠 신뢰성/참고 (전체 폭) │
 │ 질문별 결과 표 (전체 폭 — 컬럼 6개라 여기 필요)   │
 │ 발견된 경쟁사 막대그래프 / 자주 인용된 도메인     │
 │ 사이트 문제 ↔ 답변 연결 / 우선 개선 과제          │
@@ -31,7 +31,7 @@ HTML 파일**로도 만들어 `templates/report.html`에 저장한다. 외부 CD
 ```
 
 즉 split엔 **게이지 원형 그래픽 + 등급**과 **핵심 지표 숫자 카드 4개(2×2)**, 딱 그
-두 개만 넣는다. 필수/권장/참고 표는 게이지 카드 안이 아니라 그 아래 전체 폭
+두 개만 넣는다. 기술 진단 상세 표는 게이지 카드 안이 아니라 그 아래 전체 폭
 카드로 옮긴다.
 
 **split의 두 카드는 높이를 맞춘다** — 게이지 카드가 자연히 더 크고 핵심지표
@@ -48,6 +48,7 @@ HTML 파일**로도 만들어 `templates/report.html`에 저장한다. 외부 CD
 <section class="card split-card">
   <h2>사이트 기술 점수</h2>
   <div class="card-body">
+    <div class="access-state">AI 접근 상태: 접근 가능</div>
     <div class="gauge">...</div>
   </div>
 </section>
@@ -107,29 +108,31 @@ CSS: `.split{display:grid;grid-template-columns:2fr 3fr;gap:20px}` (align-items
 
 예시(68점): 회전각 = -90 + 68×1.8 = 32.4 → `transform="rotate(32.4 100 100)"`.
 
-**`.gauge-grade`엔 등급만 적는다 — "필수 항목 전부 통과" 같은 부연은 붙이지
-않는다.** 아래 필수/권장/참고 표가 색으로 이미 다 보여주는 내용을 문장으로
-반복할 필요가 없다. 등급 하나로 충분하다: "양호", "보완 필요" 같은 단어만.
+**`.gauge-grade`엔 등급만 적는다.** 접근 상태는 게이지 위의 별도 배지에
+`접근 가능·일부 제한·노출 차단` 중 하나로 표시한다. 점수 상한이 적용됐으면 게이지
+아래에 `원점수 82점 · 일부 제한으로 69점 상한 적용`처럼 근거를 한 줄로 붙인다.
 
-## 필수/권장/참고 — 표 3개로 나누고, 색으로도 확실히 구분한다
+## 기술 진단 상세 — 네 영역을 분리한다
 
-소제목만으로는 구분이 약하다. **테두리 색 + 칩 배지**를 같이 쓰되, **둘 다
-셋이 똑같은 강조색(파랑)으로 통일한다** — 필수·권장·참고 전부 같은 파랑
-테두리·같은 파랑 칩으로, 핵심 지표 같은 다른 섹션 제목과 같은 "탭"으로
-읽히게 한다. 색을 tier마다 다르게 나누면 권장·참고가 낮은 우선순위처럼
-보여서 오히려 "이것도 똑같이 구분된 섹션"이라는 느낌이 약해진다 — tier
-구분은 색이 아니라 **칩 안 텍스트("필수"/"권장"/"참고 · 점수 미포함")** 하나로
-충분히 한다:
+**테두리 색 + 칩 배지**를 같이 쓰고 같은 강조색(파랑)으로 통일한다. 네 영역의
+차이는 색이 아니라 칩 안 텍스트로 구분한다. AI 접근 상태는 4개 차단 항목,
+사이트 기술 완성도는 6개 점수 영역, 콘텐츠 신뢰성은 정성 판정, 참고는 점수
+미포함 항목을 보여준다.
 
 ```html
-<div class="tier-block required">
-  <span class="tier-chip required">필수</span>
-  <table class="tier-table">...HTTP 200, noindex 없음 등 4개...</table>
+<div class="tier-block access">
+  <span class="tier-chip access">AI 접근 상태</span>
+  <table class="tier-table">...공개 페이지 응답, 색인 허용, 검색용 크롤러 접근, 핵심 콘텐츠 가독성...</table>
 </div>
 
-<div class="tier-block recommended">
-  <span class="tier-chip recommended">권장</span>
-  <table class="tier-table">...sitemap, AI 크롤러별 정책 등...</table>
+<div class="tier-block technical">
+  <span class="tier-chip technical">사이트 기술 완성도</span>
+  <table class="tier-table">...6개 영역별 획득 점수와 근거...</table>
+</div>
+
+<div class="tier-block trust">
+  <span class="tier-chip trust">콘텐츠 신뢰성</span>
+  <table class="tier-table">...제품·글·회사 페이지별 판정과 근거...</table>
 </div>
 
 <div class="tier-block optional">
@@ -143,22 +146,22 @@ CSS (아래 전체 골격에 포함돼 있음):
 ```css
 .tier-block{border-left:3px solid var(--line);padding-left:14px;margin-bottom:18px}
 .tier-block:last-child{margin-bottom:0}
-.tier-block.required{border-left-color:var(--accent)}
-.tier-block.recommended{border-left-color:var(--accent)}
+.tier-block.access{border-left-color:var(--accent)}
+.tier-block.technical{border-left-color:var(--accent)}
+.tier-block.trust{border-left-color:var(--accent)}
 .tier-block.optional{border-left-color:var(--accent)}
 .tier-chip{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;
   letter-spacing:.05em;padding:3px 9px;border-radius:5px;margin-bottom:10px}
-.tier-chip.required{background:#16264a;color:var(--accent)}
-.tier-chip.recommended{background:#16264a;color:var(--accent)}
+.tier-chip.access{background:#16264a;color:var(--accent)}
+.tier-chip.technical{background:#16264a;color:var(--accent)}
+.tier-chip.trust{background:#16264a;color:var(--accent)}
 .tier-chip.optional{background:#16264a;color:var(--accent)}
 ```
 
-이렇게 하면 소제목 텍스트만 있을 때보다 "여기서부터 필수, 여기서부터 권장,
-여기서부터 참고"가 스캔하듯 봐도 셋 다 바로 들어온다.
+이렇게 하면 접근 차단, 점수 영역, 콘텐츠 신뢰성, 참고가 섞이지 않는다.
 
-**세 표의 항목/상태/근거 컬럼 너비도 통일한다.** 표 세 개가 각자 자기 내용
-길이에 맞춰 컬럼 폭을 정하면(브라우저 기본 동작), 필수 표의 "항목" 폭과 권장
-표의 "항목" 폭이 서로 달라져서 세로로 훑을 때 삐뚤빼뚤해 보인다. 세 표 모두
+**네 표의 항목/상태/근거 컬럼 너비도 통일한다.** 표가 각자 자기 내용
+길이에 맞춰 컬럼 폭을 정하면 세로로 훑을 때 삐뚤빼뚤해 보인다. 모든 표에
 같은 `.tier-table`에 `table-layout:fixed`와 `<colgroup>`으로 고정 비율을
 줘서 폭을 강제로 맞춘다:
 
@@ -351,6 +354,8 @@ CSS(아래 전체 골격에 포함돼 있음):
   .gauge-score{font-size:2rem;font-weight:700;margin-top:-8px}
   .gauge-max{font-size:1rem;color:var(--muted);font-weight:400}
   .gauge-grade{color:var(--muted)}
+  .access-state{align-self:center;background:#16264a;color:var(--accent);font-size:.78rem;
+    font-weight:700;padding:4px 10px;border-radius:999px;margin-bottom:8px}
   table{width:100%;border-collapse:collapse;font-size:.92rem}
   th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
   th{color:var(--muted);font-weight:600;white-space:nowrap}
@@ -361,13 +366,15 @@ CSS(아래 전체 골격에 포함돼 있음):
   h2{font-size:1.05rem;margin:0 0 12px;color:var(--accent)}
   .tier-block{border-left:3px solid var(--line);padding-left:14px;margin-bottom:18px}
   .tier-block:last-child{margin-bottom:0}
-  .tier-block.required{border-left-color:var(--accent)}
-  .tier-block.recommended{border-left-color:var(--accent)}
+  .tier-block.access{border-left-color:var(--accent)}
+  .tier-block.technical{border-left-color:var(--accent)}
+  .tier-block.trust{border-left-color:var(--accent)}
   .tier-block.optional{border-left-color:var(--accent)}
   .tier-chip{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;
     letter-spacing:.05em;padding:3px 9px;border-radius:5px;margin-bottom:10px}
-  .tier-chip.required{background:#16264a;color:var(--accent)}
-  .tier-chip.recommended{background:#16264a;color:var(--accent)}
+  .tier-chip.access{background:#16264a;color:var(--accent)}
+  .tier-chip.technical{background:#16264a;color:var(--accent)}
+  .tier-chip.trust{background:#16264a;color:var(--accent)}
   .tier-chip.optional{background:#16264a;color:var(--accent)}
   .note{color:var(--muted);font-size:.85rem;margin-top:10px}
   .formula-list{list-style:none;margin:10px 0 0;padding:0;color:var(--muted);
@@ -392,15 +399,15 @@ CSS(아래 전체 골격에 포함돼 있음):
   <h1>{브랜드명} GEO 스냅샷</h1>
   <div class="sub">측정일자: {날짜} · 질문 5개 · 단일 시점</div>
   <div class="banner">⚠ 질문 5개, 단일 시점, 반복 측정 없음의 스냅샷입니다. 추세가 아니라 현재 한 장의 사진으로 읽어주세요.
-  <br>아래 사이트 기술 점수는 HTTP 응답·HTML·메타 태그 등 확인 가능한 사실 기준의 별도 지표입니다.</div>
+  <br>아래 사이트 기술 진단은 AI가 사이트를 접근·발견·해석하기 좋은 상태인지 확인한 별도 결과이며, 실제 추천·인용을 보장하지 않습니다.</div>
 
   <div class="split">
-    <section class="card split-card"><h2>사이트 기술 점수</h2><div class="card-body">(게이지 + 등급만 — 표는 아래로)</div></section>
+    <section class="card split-card"><h2>사이트 기술 점수</h2><div class="card-body">(AI 접근 상태 + 게이지 + 등급 + 상한 근거 — 표는 아래로)</div></section>
     <section class="card split-card"><h2>핵심 지표</h2><div class="card-body">(숫자 카드 4개(2×2) + 산식 .formula-list만)</div></section>
   </div>
 
   <!-- 아래부터는 전체 폭 — 컬럼 많은 표·차트가 있는 섹션은 전부 여기 -->
-  <div class="card"><h2>사이트 기술 진단 상세</h2>(필수/권장/참고 3표 삽입, 각 table.tier-table + colgroup)</div>
+  <div class="card"><h2>사이트 기술 진단 상세</h2>(AI 접근 상태/사이트 기술 완성도/콘텐츠 신뢰성/참고 4표 삽입, 각 table.tier-table + colgroup)</div>
   <div class="card"><h2>질문별 결과</h2>(O/X표 + 등장브랜드 배지 + 질문별 details 삽입)</div>
   <div class="card"><h2>답변에서 발견된 경쟁사</h2>(막대그래프 삽입, 브랜드 1개뿐이면 표만)</div>
   <!-- 자주 인용된 도메인 카드도 여기 순서대로 추가 -->
